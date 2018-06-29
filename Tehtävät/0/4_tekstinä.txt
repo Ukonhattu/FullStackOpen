@@ -1,0 +1,17 @@
+kayttaja->selain:
+note left of selain
+kayttaja klikkaa kirjoittaa muistiinpanon ja lähettää sen
+painamalla "talleta"
+end note
+selain->palvelin: POST fullstack-exampleapp.herokuapp.com/new_note
+note left of palvelin
+  lähetetään formi
+end note
+palvelin->selain: status 302, uudelleenohjaus /notes
+
+
+
+note left of palvelin
+ Formi käsiteltiin onnistuneesti. Nyt käyttäjä uudelleenohjataan /notes
+ ja tapahtuu se mitä kyseisen toiminnon kaaviossa on kuvattu.
+end note
