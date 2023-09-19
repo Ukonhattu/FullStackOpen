@@ -1,9 +1,0 @@
-kayttaja->selain:
-note left of selain
-Käyttäjä painaa "talleta" muistiinpanoissa
-end note
-selain->palvelin: POST fullstack-exampleapp.herokuapp.com/new_note_spa
-palvelin->selain: Status 201, tietue luotu
-
-
-end note
