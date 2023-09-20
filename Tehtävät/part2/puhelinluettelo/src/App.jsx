@@ -1,17 +1,19 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Phonebook from './Components/Phonebook.jsx'
 import PersonForm from './Components/PersonForm.jsx'
+import personService from './services/persons.js'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ])
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [search, setSearch] = useState('')
+
+  useEffect(() => {
+    personService.getAll().then(persons => {
+      setPersons(persons)
+    } )
+  }, [])
 
   const handleAddPerson = (event) => {
     event.preventDefault()
@@ -23,8 +25,9 @@ const App = () => {
       alert(`${newName} is already added to phonebook`)
       return
     }
-    const newPersons = persons.concat(newPerson)
-    setPersons(newPersons)
+    personService.create(newPerson).then(returnedPerson => {
+      setPersons(persons.concat(returnedPerson))
+    })
     setNewName('')
     setNewNumber('')
   }
@@ -41,6 +44,15 @@ const App = () => {
     setSearch(event.target.value)
   }
 
+  const handleDeletePerson = (person) => {
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personService.remove(person.id).then(() => {
+        const newPersons = persons.filter(p => p.id !== person.id)
+        setPersons(newPersons)
+      })
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -54,7 +66,10 @@ const App = () => {
                     newNumber={newNumber} 
                     handleNumberChange={handleNumberChange}/>
       <h2>Numbers</h2>
-      <Phonebook persons={persons} filter={search}/>
+      <Phonebook persons={persons} 
+                  filter={search}
+                  handleDeletePerson={handleDeletePerson}
+                  />
     </div>
   )
 
